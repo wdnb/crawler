@@ -8,16 +8,10 @@ class DoubanSpider(scrapy.Spider):
     start_urls = ['https://www.douban.com/group/HZhome/']
 
     def parse(self, response):
-        dl = response.css('.mod table')
-        # filename = response.url.split("/")[-2]  # 获取url，用”/”分段，获去倒数第二个字段
-        # with open(filename, 'ab') as f:
-            # f.write(response.body)  # 把访问的得到的网页源码写入文件
-        for dd in dl:
-            item = CrawlerItem()
-            item['title'] = dd.css('.title a::text').extract_first()
-            # item['nowrap'] = dd.css('.nowrap a::text').extract_first()
-            yield item
-
-        #   filename = response.url.split("/")[-2] # 获取url，用”/”分段，获去倒数第二个字段
-        #   with open(filename, 'ab') as f:
-            #   f.write(response.body)  # 把访问的得到的网页源码写入文件
+        # title = (response.xpath('//table[contains(@class,"olt")]//tr//a/text()').extract())
+        title = (response.xpath('//table[contains(@class,"olt")]//tr/td[contains(@class,"title")]//a/text()').extract())
+        nickname = (response.xpath('//table[contains(@class,"olt")]//tr/td[contains(@nowrap,"nowrap")]//a/text()').extract())
+        print(title)
+        print(nickname)
+        # 返回一个request对象和一个item对象，request对象放的是标题的url，后面scrapy会继续读取这个url然后交给parse继续解析
+        # return [scrapy.Request(content_url, self.post_content_parse, dont_filter=True),{"title":title}]
